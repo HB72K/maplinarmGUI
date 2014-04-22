@@ -24,7 +24,7 @@ import usb.core, usb.util, time, sys
 
 class App:
 	def __init__(self, master):
-		
+		"""inicio de ambiente grafico"""
 		self.usb_vendor_id=0x1267
 		self.usb_prod_id=0x000
 		self.rctl = usb.core.find(idVendor=self.usb_vendor_id, idProduct=self.usb_prod_id) #Object to talk to the robot
@@ -47,8 +47,6 @@ class App:
 		'parar': [0,0,0],
 		}
 		
-		def abrir (self):
-			self.MoveArm(t=1, cmd='abrir-pinza')
 			
 		#---------------Ambiente Grafico- -----------#
 		mainframe = Frame(master, padding = '3 3 12 12')
@@ -61,8 +59,11 @@ class App:
 		
 		#variables
 		self.tiempo = DoubleVar()
-		self.ordenesGrabadas=[]
-		self.enGrabacion=False
+		self.ordenesGrabadas=[]#("base-izquierda", 1), ("base-derecha",1)
+		self.cadenaOrdenes=""
+		self.numeroOrdenes=0
+		self.ordenesGrabadasString=StringVar()
+		self.enGrabacion=BooleanVar()
 		
 		
 		#pinza
@@ -109,11 +110,13 @@ class App:
 		Button(mainframe, text="Play", command = self.ejecutarOrdenesGrabadas).grid(column=0, row=9, sticky=W)
 		Button(mainframe, text="Grabar", command = self.iniciarGrabacion).grid(column=1, row=9, sticky=W)
 		
-		Label(mainframe, text='Estado Grabacion').grid(column=0, row=10, sticky=W)
+		Label(mainframe, text='Estado Grabacion ').grid(column=0, row=10, sticky=W)
+		Label(mainframe, textvariable=self.enGrabacion).grid(column=0, row=11, sticky=W)
+
 		
 		#ordenes
 		Label(mainframe, text='ordenes').grid(column=7, row=7, sticky=W)
-		message = Message(mainframe, text=str([orden[0] for orden in self.ordenesGrabadas]))
+		message = Message(mainframe, textvariable=self.ordenesGrabadasString)
 		message.grid(row=8,column=7, sticky=E)
 
 		#separador horizontal
@@ -127,48 +130,63 @@ class App:
 			font=("Helvetica", 15)).grid(row=7, column=1,sticky=E)
 			
 	def onScale(self, val):
+		"""ajusta el valor del tiempo mediante barra deslizante"""
 		v = int(float(val))
 		self.tiempo.set(v)
 		
 	
 	def iniciarGrabacion(self):
-		self.enGrabacion=True
+		self.enGrabacion.set(True)
 		
+	def pararGrabacion(self):
+		self.enGrabacion.set(False)
 	
-				
-		
-		
-		
+	def actualizarCadenaOrdenesGrabadas(self):
+		cont=0
+		for orden in self.ordenesGrabadas[self.numeroOrdenes:]:
+			self.cadenaOrdenes += orden[0] + " "
+			cont+=1
+		self.numeroOrdenes+=cont
+		self.ordenesGrabadasString.set(self.cadenaOrdenes)
+		print self.cadenaOrdenes
+
 	def abrir (self):
 		self.MoveArm(t=self.tiempo.get(), cmd='abrir-pinza')
 		if self.enGrabacion:
 			self.ordenesGrabadas.append(('abrir-pinza', self.tiempo.get()))
+			self.actualizarCadenaOrdenesGrabadas()
 	
 	def cerrar (self):
 		self.MoveArm(t=1, cmd='cerrar-pinza')	
-		if self.enGrabacion:
+		if self.enGrabacion.get():
 			self.ordenesGrabadas.append(('cerrar-pinza', self.tiempo.get()))
+			self.actualizarCadenaOrdenesGrabadas()
 		
 	def baseDerecha (self):
 		self.MoveArm(t=self.tiempo.get(), cmd='base-derecha')
-		if self.enGrabacion:
+		if self.enGrabacion.get():
 			self.ordenesGrabadas.append(('base-derecha', self.tiempo.get()))
+			self.actualizarCadenaOrdenesGrabadas()
 		
 	def baseIzquierda (self):
 		self.MoveArm(t=self.tiempo.get(), cmd='base-izquierda')
-		if self.enGrabacion:
+		if self.enGrabacion.get():
 			self.ordenesGrabadas.append(('base-izquierda', self.tiempo.get()))
+			self.actualizarCadenaOrdenesGrabadas()
 		
 	def subirHombro (self):
 		self.MoveArm(t=self.tiempo.get(), cmd='subir-hombro')
 		if self.enGrabacion:
-			self.ordenesGrabadas.append(('subir-codo', self.tiempo.get()))	
+			self.ordenesGrabadas.append(('subir-hombro', self.tiempo.get()))	
+			self.actualizarCadenaOrdenesGrabadas()
 		
 	def bajarHombro (self):
 		self.MoveArm(t=self.tiempo.get(), cmd='bajar-hombro')
-		if self.enGrabacion:
+		if self.enGrabacion.get():
 			self.ordenesGrabadas.append(('bajar-hombro', self.tiempo.get()))
-		
+			self.actualizarCadenaOrdenesGrabadas()
+	
+	#aniadir funcion enGrabacion desde subirCodo hasta apagarLuz	
 	def subirCodo(self):
 		self.MoveArm(t=self.tiempo.get(), cmd='subir-codo')
 		
@@ -190,6 +208,7 @@ class App:
 
 	
 	def ejecutarOrdenesGrabadas(self):
+		self.pararGrabacion()
 		print self.ordenesGrabadas
 		print self.enGrabacion
 		for orden in self.ordenesGrabadas:
@@ -222,10 +241,6 @@ class App:
 				pass
 				
 					
-			
-				
-			
-
 	def SetVendorId(self,vid):
 		self.usb_vendor_id = vid
 
@@ -292,78 +307,7 @@ root.mainloop()
 
 
 
-# ejemplo de uso con teclas
-#s = MaplinRobot()
 
-#enCalibracion = False
-
-
-#while True:
-	#if enCalibracion:
-		#print "ATENCION ESTA USTED CALIBRANDO"
-		#print "vease la foto ubicada en la carpeta del brazo"
-		#print "para ver como colocar el brazo en la calibracion"
-		#print ""
-	#print """pulsa '1' para encender la luz, 'a' para girar la base hacia  la derecha, 'd' para girar la base hacia la izquierda"""
-	#print """pulsa 'w' para subir el hombro y 's' para bajarlo """
-	#print """pulsa 'r' para subir el codo y 'f' para bajarlo"""
-	#print """pulsa 't' para subir la munneca o 'g' para bajarla"""
-	#print """pulsa 'y' para abrir pinza o 'h' para cerrarla"""
-	#print """para salir del programa pulsar la tecla "p" """
-	#print """pulsa "c" para empezar a calibrar y "v" para terminar de calibrar"""
-	#print ""
-	#s.MostrarPosiciones() 
-	#tiempo = 1.00
-	
-	#orden = raw_input()
-	#if orden == "c":
-		
-		#enCalibracion = True
-	#elif orden == "v":
-		#s.posiciones ["base"]=0
-		#s.posiciones ["hombro"]=0
-		#s.posiciones ["codo"]=16
-		#s.posiciones ["munneca"]=0
-		#s.posiciones ["pinza"]=0
-		#enCalibracion = False
-	#elif orden == "1":
-		#s.MoveArm(t=5.0, cmd='encender-luz')
-	#elif orden == "a" and (enCalibracion or s.posiciones ["base"] < 15):
-		#s.MoveArm(t=tiempo, cmd='base-derecha')
-		#s.posiciones ["base"] += tiempo
-	#elif orden == "d" and (enCalibracion or s.posiciones ["base"] > 1):
-		#s.MoveArm(t=tiempo, cmd='base-izquierda')
-		#s.posiciones ["base"] -= tiempo
-	#elif orden == "w" and (enCalibracion or s.posiciones ["hombro"] < 12):
-		#s.MoveArm(t=tiempo, cmd='subir-hombro')
-		#s.posiciones["hombro"] += tiempo
-	#elif orden == "s" and (enCalibracion or s.posiciones ["hombro"] > 1):
-		#s.MoveArm(t=tiempo, cmd='bajar-hombro')
-		#s.posiciones["hombro"] -= tiempo
-	#elif orden == "r" and (enCalibracion or s.posiciones ["codo"] < 16):
-		#s.MoveArm(t=tiempo, cmd='subir-codo')
-		#s.posiciones["codo"] += tiempo
-	#elif orden == "f" and (enCalibracion or s.posiciones ["codo"] > 1):
-		#s.MoveArm(t=tiempo, cmd='bajar-codo')
-		#s.posiciones["codo"] -= tiempo
-	#elif orden == "t" and (enCalibracion or s.posiciones ["munneca"] < 7):
-		#s.MoveArm(t=tiempo, cmd='subir-munneca')
-		#s.posiciones["munneca"] += tiempo
-	#elif orden == "g" and (enCalibracion or s.posiciones ["munneca"] > 1):
-		#s.MoveArm(t=tiempo, cmd='bajar-munneca')
-		#s.posiciones["munneca"] -= tiempo
-	#elif orden == "y" and (enCalibracion or s.posiciones ["pinza"] < 3):
-		#s.MoveArm(t=tiempo/4.0, cmd='abrir-pinza')
-		#s.posiciones["pinza"] += tiempo
-	#elif orden == "h" and (enCalibracion or s.posiciones ["pinza"] > 0):
-		#s.MoveArm(t=tiempo/4.0, cmd='cerrar-pinza')
-		#s.posiciones["pinza"] -= tiempo
-	#elif orden == "p":
-		#print "esto es todo por hoy"
-		#break
-		
-	#else:
-		#print "no has pulsado la tecla correcta"
 	
 
 
