@@ -20,32 +20,20 @@
 from Tkinter import *
 from ttk import *
 import random
-import usb.core, usb.util, time, sys
+
+from comunicacion_con_brazo import comunicacion
 
 class App:
 	def __init__(self, master):
+		"""iniciando la comunicacion con el brazo"""
+		self.com=comunicacion()
+		
 		"""inicio de ambiente grafico"""
-		self.usb_vendor_id=0x1267
-		self.usb_prod_id=0x000
-		self.rctl = usb.core.find(idVendor=self.usb_vendor_id, idProduct=self.usb_prod_id) #Object to talk to the robot
+		
 		self.duration=1.0 # Duration (In seconds) for each action. Defaults to 1 second
 		
 
-		self.moves={
-		'base-izquierda' : [0,1,0],
-		'base-derecha' : [0,2,0],
-		'subir-hombro': [64,0,0],
-		'bajar-hombro': [128,0,0],
-		'subir-codo': [16,0,0],
-		'bajar-codo': [32,0,0],
-		'subir-munneca': [4,0,0],
-		'bajar-munneca': [8,0,0],
-		'abrir-pinza': [2,0,0],
-		'cerrar-pinza': [1,0,0],
-		'encender-luz': [0,0,1],
-		'apagar-luz': [0,0,0],
-		'parar': [0,0,0],
-		}
+		
 		
 			
 		#---------------Ambiente Grafico- -----------#
@@ -153,53 +141,53 @@ class App:
 		print self.cadenaOrdenes
 
 	def abrir (self):
-		self.MoveArm(t=self.tiempo.get(), cmd='abrir-pinza')
+		self.com.MoveArm(t=self.tiempo.get(), cmd='abrir-pinza')
 		if self.enGrabacion.get():
 			self.actualizarOrdenesGrabadas('abrir-pinza')
 	
 	def cerrar (self):
-		self.MoveArm(t=1, cmd='cerrar-pinza')	
+		self.com.MoveArm(t=1, cmd='cerrar-pinza')	
 		if self.enGrabacion.get():
 			self.actualizarOrdenesGrabadas('cerrar-pinza')
 		
 	def baseDerecha (self):
-		self.MoveArm(t=self.tiempo.get(), cmd='base-derecha')
+		self.com.MoveArm(t=self.tiempo.get(), cmd='base-derecha')
 		if self.enGrabacion.get():
 			self.actualizarOrdenesGrabadas('base-derecha')
 		
 	def baseIzquierda (self):
-		self.MoveArm(t=self.tiempo.get(), cmd='base-izquierda')
+		self.com.MoveArm(t=self.tiempo.get(), cmd='base-izquierda')
 		if self.enGrabacion.get():
 			self.actualizarOrdenesGrabadas('base-izquierda')
 		
 	def subirHombro (self):
-		self.MoveArm(t=self.tiempo.get(), cmd='subir-hombro')
+		self.com.MoveArm(t=self.tiempo.get(), cmd='subir-hombro')
 		if self.enGrabacion.get():	
 			self.actualizarOrdenesGrabadas('subir-hombro')
 		
 	def bajarHombro (self):
-		self.MoveArm(t=self.tiempo.get(), cmd='bajar-hombro')
+		self.com.MoveArm(t=self.tiempo.get(), cmd='bajar-hombro')
 		if self.enGrabacion.get():
 			self.actualizarOrdenesGrabadas('bajar-hombro')
 	
 	#aniadir funcion enGrabacion desde subirCodo hasta apagarLuz	
 	def subirCodo(self):
-		self.MoveArm(t=self.tiempo.get(), cmd='subir-codo')
+		self.com.MoveArm(t=self.tiempo.get(), cmd='subir-codo')
 		
 	def bajarCodo (self):
-		self.MoveArm(t=self.tiempo.get(), cmd='bajar-codo')
+		self.com.MoveArm(t=self.tiempo.get(), cmd='bajar-codo')
 		
 	def subirMunneca(self):
-		self.MoveArm(t=self.tiempo.get(), cmd='subir-munneca')
+		self.com.MoveArm(t=self.tiempo.get(), cmd='subir-munneca')
 		
 	def bajarMunneca (self):
-		self.MoveArm(t=self.tiempo.get(), cmd='bajar-munneca')
+		self.com.MoveArm(t=self.tiempo.get(), cmd='bajar-munneca')
 		
 	def encenderLuz (self):
-		self.MoveArm(t=self.tiempo.get(), cmd='encender-luz')
+		self.com.MoveArm(t=self.tiempo.get(), cmd='encender-luz')
 		
 	def apagarLuz (self):
-		self.MoveArm(t=self.tiempo.get(), cmd='apagar-luz')
+		self.com.MoveArm(t=self.tiempo.get(), cmd='apagar-luz')
 		
 
 	
@@ -237,58 +225,7 @@ class App:
 				pass
 				
 					
-	def SetVendorId(self,vid):
-		self.usb_vendor_id = vid
-
-
-	def SetProdID(self,pid):
-		self.usb_prod_id = pid
-
-
-	def StopArm(self):
-		if self.CheckComms():
-			self.rctl.ctrl_transfer(0x40,6,0x100,0,self.moves['parar'],1000) #Send stop command	
-			return True
-		else:
-			return False
-
-
-	def CheckComms(self):
-		'''Checks that the arm is connected and we can talk to it'''
-		try:
-			if self.rctl != None:
-				return True
-			else:
-				print "no se puede comunicar con el brazo.\n"
-				return False
-		except usb.core.USBError:
-			print "USB error de comunicacion.\n"
-			return False
-
-	def MoveArm(self,t,cmd):
-		print self.ordenesGrabadas
-		print self.enGrabacion
-		try:
-			#Check that we can send commands to the arm
-			if self.CheckComms():
-				#We can send stuff
-				print "enviando comando %s\n" %cmd
-				self.rctl.ctrl_transfer(0x40,6,0x100,0,self.moves[cmd],1000) #Send command
-				time.sleep(t) #Wait 
-				self.StopArm()
-				print "hecho.\n"
-				return True
-			else:
-				return False
-			
-		except KeyboardInterrupt:
-			print "ctrl-c presionado. parando el brazo"
-			self.StopArm()
-			return False
-
-		except usb.core.USBError:
-			print "USB error de comunicacion.\n"
-			return False
+	
 			
 		
 	
