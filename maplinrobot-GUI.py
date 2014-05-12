@@ -57,9 +57,9 @@ class App:
 		mainframe.rowconfigure(0, weight=1)
 		
 		
-		#variables
+		# ---------------------- Variables -------------------------
 		self.tiempo = DoubleVar()
-		self.ordenesGrabadas=[]#("base-izquierda", 1), ("base-derecha",1)
+		self.ordenesGrabadas=[]		#("base-izquierda", 1), ("base-derecha",1)
 		self.cadenaOrdenes=""
 		self.numeroOrdenes=0
 		self.ordenesGrabadasString=StringVar()
@@ -141,7 +141,9 @@ class App:
 	def pararGrabacion(self):
 		self.enGrabacion.set(False)
 	
-	def actualizarCadenaOrdenesGrabadas(self):
+	def actualizarOrdenesGrabadas(self,comando):
+		""" Esta funcion por ahora no es muy elegante: hace dos cosas a la vez """
+		self.ordenesGrabadas.append((comando, self.tiempo.get()))
 		cont=0
 		for orden in self.ordenesGrabadas[self.numeroOrdenes:]:
 			self.cadenaOrdenes += orden[0] + " "
@@ -152,39 +154,33 @@ class App:
 
 	def abrir (self):
 		self.MoveArm(t=self.tiempo.get(), cmd='abrir-pinza')
-		if self.enGrabacion:
-			self.ordenesGrabadas.append(('abrir-pinza', self.tiempo.get()))
-			self.actualizarCadenaOrdenesGrabadas()
+		if self.enGrabacion.get():
+			self.actualizarOrdenesGrabadas('abrir-pinza')
 	
 	def cerrar (self):
 		self.MoveArm(t=1, cmd='cerrar-pinza')	
 		if self.enGrabacion.get():
-			self.ordenesGrabadas.append(('cerrar-pinza', self.tiempo.get()))
-			self.actualizarCadenaOrdenesGrabadas()
+			self.actualizarOrdenesGrabadas('cerrar-pinza')
 		
 	def baseDerecha (self):
 		self.MoveArm(t=self.tiempo.get(), cmd='base-derecha')
 		if self.enGrabacion.get():
-			self.ordenesGrabadas.append(('base-derecha', self.tiempo.get()))
-			self.actualizarCadenaOrdenesGrabadas()
+			self.actualizarOrdenesGrabadas('base-derecha')
 		
 	def baseIzquierda (self):
 		self.MoveArm(t=self.tiempo.get(), cmd='base-izquierda')
 		if self.enGrabacion.get():
-			self.ordenesGrabadas.append(('base-izquierda', self.tiempo.get()))
-			self.actualizarCadenaOrdenesGrabadas()
+			self.actualizarOrdenesGrabadas('base-izquierda')
 		
 	def subirHombro (self):
 		self.MoveArm(t=self.tiempo.get(), cmd='subir-hombro')
-		if self.enGrabacion:
-			self.ordenesGrabadas.append(('subir-hombro', self.tiempo.get()))	
-			self.actualizarCadenaOrdenesGrabadas()
+		if self.enGrabacion.get():	
+			self.actualizarOrdenesGrabadas('subir-hombro')
 		
 	def bajarHombro (self):
 		self.MoveArm(t=self.tiempo.get(), cmd='bajar-hombro')
 		if self.enGrabacion.get():
-			self.ordenesGrabadas.append(('bajar-hombro', self.tiempo.get()))
-			self.actualizarCadenaOrdenesGrabadas()
+			self.actualizarOrdenesGrabadas('bajar-hombro')
 	
 	#aniadir funcion enGrabacion desde subirCodo hasta apagarLuz	
 	def subirCodo(self):
