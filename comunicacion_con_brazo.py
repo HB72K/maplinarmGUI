@@ -1,4 +1,5 @@
 import usb.core, usb.util, time, sys
+#Use sudo pip install pyusb for usb.core
 
 class comunicacion:
 	def __init__(self):
