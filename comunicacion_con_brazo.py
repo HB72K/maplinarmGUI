@@ -49,7 +49,7 @@ class comunicacion:
 				print "no se puede comunicar con el brazo.\n"
 				return False
 		except usb.core.USBError:
-			print "USB error de comunicacion.\n"
+			print "USB error de comunicacion 1 .\n"
 			return False
 
 	def MoveArm(self,t,cmd):
@@ -73,5 +73,5 @@ class comunicacion:
 			return False
 
 		except usb.core.USBError:
-			print "USB error de comunicacion.\n"
+			print "USB error de comunicacion 2.\n"
 			return False
