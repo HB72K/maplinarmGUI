@@ -579,13 +579,13 @@ regenerar_pantalla()
 
 
 # MARCO para envolver la zona de muestra de datos (DISPLAY)
-marco01 = LabelFrame(root, text = "Datos de interés", bd = 1).place(width = 265, height = 80, x = 5, y = 275)
+marco01 = LabelFrame(root, text = "Datos de interés", bd = 1).place(width = 265, height = 80, x = 5, y = 480)
 
 # ETIQUETAS para las CAJAS DE TEXTO
-etiqueta00 = Label(root, text = "Radianes").place(width = 50, height = 30, x = 20, y = 290)
-etiqueta01 = Label(root, text = "Grados").place(width = 50, height = 30, x = 80, y = 290)
-etiqueta02 = Label(root, text = "Rotula").place(width = 50, height= 30, x = 140, y = 290)
-etiqueta03 = Label(root, text = "Dirección").place(width = 50, height = 30, x = 200, y = 290)
+etiqueta00 = Label(root, text = "Radianes").place(width = 50, height = 30, x = 20, y = 495)
+etiqueta01 = Label(root, text = "Grados").place(width = 50, height = 30, x = 80, y = 495)
+etiqueta02 = Label(root, text = "Rotula").place(width = 50, height= 30, x = 140, y = 495)
+etiqueta03 = Label(root, text = "Dirección").place(width = 50, height = 30, x = 200, y = 495)
 
 # VARIABLES para la recoleccion de datos
 entrada_0000 = StringVar()
@@ -599,19 +599,19 @@ entrada_0003.set("Reposo")
 
 # CAJAS DE TEXTO para la muestra de datos útiles
 mostrar_Radianes = Entry(root,textvariable = entrada_0000, bg = 'green', fg = 'Yellow', justify = RIGHT,
-                       font=('wst_engl', 10, 'bold')).place(width = 50, height = 20, x = 20, y = 315)
+                       font=('wst_engl', 10, 'bold')).place(width = 50, height = 20, x = 20, y = 520)
 mostrar_Grados = Entry(root, textvariable = entrada_0001, bg = 'green',fg = 'Yellow', justify = RIGHT,
-                     font=('wst_engl', 10, 'bold')).place(width = 50, height = 20, x = 80, y = 315)
+                     font=('wst_engl', 10, 'bold')).place(width = 50, height = 20, x = 80, y = 520)
 mostrar_Rotula = Entry(root, textvariable=entrada_0002,bg='green',fg = 'Yellow', justify =RIGHT,
-                     font=('wst_engl', 10, 'bold')).place(width=50, height=20, x = 140, y = 315)
+                     font=('wst_engl', 10, 'bold')).place(width=50, height=20, x = 140, y = 520)
 mostrar_Movimiento = Entry(root, textvariable = entrada_0003, bg='green', fg = 'Yellow', justify = CENTER,
-                         font=('Arial', 8, 'bold')).place(width = 55, height = 20, x = 200, y = 315)
+                         font=('Arial', 8, 'bold')).place(width = 55, height = 20, x = 200, y = 520)
 
 
 
 
 # MARCO para envolver la zona de la botonera de control
-marco02 = LabelFrame(root, text = "CONTROLES DEL BRAZO", bd = 2).place(width = 595, height = 110, x = 5, y = 480)
+marco02 = LabelFrame(root, text = "CONTROLES DEL BRAZO", bd = 2).place(width = 595, height = 110, x = 5, y = 580)
 
 
 # BOTONES para asignar ordenes al Brazo Robot
@@ -619,50 +619,50 @@ marco02 = LabelFrame(root, text = "CONTROLES DEL BRAZO", bd = 2).place(width = 5
 # Aplicar Giros sobre la base
 boton_1 = Button(root,text="Rotar Brazo (-)",
                  command= lambda: Girar_Base(-1) or accion.actuar('base-izquierda'))
-boton_1.place(bordermode = INSIDE, width = 120, height = 30,  x = 20, y = 500)
+boton_1.place(bordermode = INSIDE, width = 120, height = 30,  x = 20, y = 600)
 
 boton_2 = Button(root,text = "Rotar Brazo (+)",
                  command = lambda: Girar_Base(1) or accion.actuar('base-derecha'))
-boton_2.place(bordermode = INSIDE, width = 120, height = 30,  x = 20, y = 550)
+boton_2.place(bordermode = INSIDE, width = 120, height = 30,  x = 20, y = 650)
 # TRAMO 1 Subir y Bajar (llama a la funcion 'Subir_Bajar' con los parametros (sentido y rotula)
 boton_3 = Button(root, text = "Subir T(1)",
                  command = lambda: subir_bajar_brazo(nodo_1.punto_ref, 1) or accion.actuar('subir-hombro'))
-boton_3.place(bordermode = INSIDE, width = 90, height = 30,  x = 160, y = 500)
+boton_3.place(bordermode = INSIDE, width = 90, height = 30,  x = 160, y = 600)
 
 boton_4 = Button(root,text="Bajar T(1)",
                  command = lambda: subir_bajar_brazo(nodo_1.punto_ref, -1) or accion.actuar('bajar-hombro'))
-boton_4.place(bordermode = INSIDE, width = 90, height = 30,  x = 160, y = 550)
+boton_4.place(bordermode = INSIDE, width = 90, height = 30,  x = 160, y = 650)
 
 # TRAMO 2 Subir y Bajar (llama a la funcion 'Subir_Bajar' con los parametros (sentido y rotula)
 boton_5 = Button(root, text = "Subir T(2)",
                  command = lambda: subir_bajar_brazo(nodo_2.punto_ref, 1) or accion.actuar('subir-codo') )
-boton_5.place(bordermode = INSIDE, width = 90, height = 30,  x = 270, y = 500)
+boton_5.place(bordermode = INSIDE, width = 90, height = 30,  x = 270, y = 600)
 
 boton_6 = Button(root, text = "Bajar T(2)",
                  command = lambda:subir_bajar_brazo(nodo_2.punto_ref, -1) or accion.actuar('bajar-codo') )
-boton_6.place(bordermode = INSIDE, width = 90, height = 30,  x = 270, y = 550)
+boton_6.place(bordermode = INSIDE, width = 90, height = 30,  x = 270, y = 650)
 
 # TRAMO 3 Subir y Bajar (llama a la funcion 'Subir_Bajar' con los parametros (sentido y rotula)
 boton_7 = Button(root, text = "Subir MANO",
                  command = lambda: subir_bajar_brazo(nodo_3.punto_ref, 1) or accion.actuar('subir-munneca'))
-boton_7.place(bordermode = INSIDE, width = 90, height = 30,  x = 380, y = 500)
+boton_7.place(bordermode = INSIDE, width = 90, height = 30,  x = 380, y = 600)
 
 boton_8 = Button(root,text="Bajar MANO",
                  command = lambda: subir_bajar_brazo(nodo_3.punto_ref, -1) or accion.actuar('bajar-munneca'))
-boton_8.place(bordermode = INSIDE, width = 90, height = 30,  x = 380, y = 550)
+boton_8.place(bordermode = INSIDE, width = 90, height = 30,  x = 380, y = 650)
 
 ## PINZA Cierra y Abre la mano del Robot mediante la funcion 'Pinza' mediante el parametro (fuerza)
 boton_9 = Button(root,text = "Abrir Pinza",
                  command = lambda: Pinza(-4) or accion.actuar('abrir-pinza'))
-boton_9.place(bordermode = INSIDE, width = 90, height = 30,  x = 490, y = 500)
+boton_9.place(bordermode = INSIDE, width = 90, height = 30,  x = 490, y = 600)
 
 boton_10 = Button(root, text = "Cerrar Pinza",
                  command = lambda: Pinza(+4) or accion.actuar('cerrar-pinza'))
-boton_10.place(bordermode = INSIDE, width = 90, height = 30,  x = 490, y = 550)
+boton_10.place(bordermode = INSIDE, width = 90, height = 30,  x = 490, y = 650)
 
 # SALIR, Boton para salir de la aplicación
 boton_0 = Button(root, text = "SALIR",fg = "white", bg = "Blue", command=root.destroy)
-boton_0.place(bordermode = INSIDE, width = 120, height = 30,  x= 740, y = 550)
+boton_0.place(bordermode = INSIDE, width = 120, height = 30,  x= 1170, y = 650)
 
 
     
