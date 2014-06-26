@@ -17,6 +17,7 @@
 
 from math import *
 from Tkinter import *
+from acciones import Acciones
 
 # ******************************************************************* #
 # *                 definicion de algunas constantes                * #
@@ -531,6 +532,10 @@ ladrillos =[ladrillo_1,ladrillo_2,ladrillo_3]
 objetos = ladrillo_1.bloque + ladrillo_2.bloque + ladrillo_3.bloque 
 
 
+# Conectando con el modulo acciones
+accion = Acciones()
+
+
 
 
 #######################################################################
@@ -617,7 +622,7 @@ boton_1 = Button(root,text="Rotar Brazo (-)",
 boton_1.place(bordermode = INSIDE, width = 120, height = 30,  x = 20, y = 500)
 
 boton_2 = Button(root,text = "Rotar Brazo (+)",
-                 command = lambda: Girar_Base(1))
+                 command = lambda: Girar_Base(1) or accion.actuar('base-derecha'))
 boton_2.place(bordermode = INSIDE, width = 120, height = 30,  x = 20, y = 550)
 # TRAMO 1 Subir y Bajar (llama a la funcion 'Subir_Bajar' con los parametros (sentido y rotula)
 boton_3 = Button(root, text = "Subir T(1)",
