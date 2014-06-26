@@ -90,8 +90,9 @@ class App:
 		list = Listbox(self.mainframe, relief=SUNKEN)
 		list.grid(row=8,column=7, sticky=E)	
 		#list.config(selectmode=SINGLE, setgrid=1)
-		list.bind('<Double-1>', self.handleList)
 		self.listaOrdenes = list
+		list.bind('<Double-1>', self.borrarOrden)
+		
 		
 		
 		#separador horizontal
@@ -171,8 +172,11 @@ class App:
 		self.listaOrdenes.delete(0, self.listaOrdenes.size())
 		
 		
-	def handleList(self):
-		pass 
+	def borrarOrden(self,event):
+		indice = int(self.listaOrdenes.curselection()[0])
+		print indice
+		self.listaOrdenes.delete(indice) 
+		del(self.ordenesGrabadas[indice])
 		
 	
 				
