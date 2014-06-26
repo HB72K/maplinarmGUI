@@ -618,7 +618,7 @@ marco02 = LabelFrame(root, text = "CONTROLES DEL BRAZO", bd = 2).place(width = 5
 
 # Aplicar Giros sobre la base
 boton_1 = Button(root,text="Rotar Brazo (-)",
-                 command= lambda: Girar_Base(-1))
+                 command= lambda: Girar_Base(-1) or accion.actuar('base-izquierda'))
 boton_1.place(bordermode = INSIDE, width = 120, height = 30,  x = 20, y = 500)
 
 boton_2 = Button(root,text = "Rotar Brazo (+)",
@@ -626,38 +626,38 @@ boton_2 = Button(root,text = "Rotar Brazo (+)",
 boton_2.place(bordermode = INSIDE, width = 120, height = 30,  x = 20, y = 550)
 # TRAMO 1 Subir y Bajar (llama a la funcion 'Subir_Bajar' con los parametros (sentido y rotula)
 boton_3 = Button(root, text = "Subir T(1)",
-                 command = lambda: subir_bajar_brazo(nodo_1.punto_ref, -1))
+                 command = lambda: subir_bajar_brazo(nodo_1.punto_ref, 1) or accion.actuar('subir-hombro'))
 boton_3.place(bordermode = INSIDE, width = 90, height = 30,  x = 160, y = 500)
 
 boton_4 = Button(root,text="Bajar T(1)",
-                 command = lambda: subir_bajar_brazo(nodo_1.punto_ref, 1))
+                 command = lambda: subir_bajar_brazo(nodo_1.punto_ref, -1) or accion.actuar('bajar-hombro'))
 boton_4.place(bordermode = INSIDE, width = 90, height = 30,  x = 160, y = 550)
 
 # TRAMO 2 Subir y Bajar (llama a la funcion 'Subir_Bajar' con los parametros (sentido y rotula)
 boton_5 = Button(root, text = "Subir T(2)",
-                 command = lambda: subir_bajar_brazo(nodo_2.punto_ref, 1))
+                 command = lambda: subir_bajar_brazo(nodo_2.punto_ref, 1) or accion.actuar('subir-codo') )
 boton_5.place(bordermode = INSIDE, width = 90, height = 30,  x = 270, y = 500)
 
 boton_6 = Button(root, text = "Bajar T(2)",
-                 command = lambda:subir_bajar_brazo(nodo_2.punto_ref, -1) )
+                 command = lambda:subir_bajar_brazo(nodo_2.punto_ref, -1) or accion.actuar('bajar-codo') )
 boton_6.place(bordermode = INSIDE, width = 90, height = 30,  x = 270, y = 550)
 
 # TRAMO 3 Subir y Bajar (llama a la funcion 'Subir_Bajar' con los parametros (sentido y rotula)
 boton_7 = Button(root, text = "Subir MANO",
-                 command = lambda: subir_bajar_brazo(nodo_3.punto_ref, 1))
+                 command = lambda: subir_bajar_brazo(nodo_3.punto_ref, 1) or accion.actuar('subir-munneca'))
 boton_7.place(bordermode = INSIDE, width = 90, height = 30,  x = 380, y = 500)
 
 boton_8 = Button(root,text="Bajar MANO",
-                 command = lambda: subir_bajar_brazo(nodo_3.punto_ref, -1))
+                 command = lambda: subir_bajar_brazo(nodo_3.punto_ref, -1) or accion.actuar('bajar-munneca'))
 boton_8.place(bordermode = INSIDE, width = 90, height = 30,  x = 380, y = 550)
 
 ## PINZA Cierra y Abre la mano del Robot mediante la funcion 'Pinza' mediante el parametro (fuerza)
 boton_9 = Button(root,text = "Abrir Pinza",
-                 command = lambda: Pinza(-4))
+                 command = lambda: Pinza(-4) or accion.actuar('abrir-pinza'))
 boton_9.place(bordermode = INSIDE, width = 90, height = 30,  x = 490, y = 500)
 
 boton_10 = Button(root, text = "Cerrar Pinza",
-                 command = lambda: Pinza(+4))
+                 command = lambda: Pinza(+4) or accion.actuar('cerrar-pinza'))
 boton_10.place(bordermode = INSIDE, width = 90, height = 30,  x = 490, y = 550)
 
 # SALIR, Boton para salir de la aplicación
